@@ -1,10 +1,10 @@
 # Disable automatic bytecompilation. We install only one script and we will
 # never "import" it.
-%undefine py_auto_byte_compile
+%global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
 
 Name:           python-rpm-generators
 Summary:        Dependency generators for Python RPMs
-Version:        9
+Version:        10
 Release:        1
 
 # Originally all those files were part of RPM, so license is kept here
