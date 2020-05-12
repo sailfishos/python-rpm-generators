@@ -15,11 +15,15 @@ Source0:        %{name}-%{version}.tar.gz
 BuildArch:      noarch
 
 %description
-%{summary}.
+The python RPM dependency generator is able to automatically add
+Requires/Provides and other types of dependencies based on egg/wheel
+metadata.
 
 %package -n python3-rpm-generators
 Summary:        %{summary}
 Requires:       python3-setuptools
+# This contains the Lua functions we use:
+Requires:       python-srpm-macros
 # The point of split
 Conflicts:      rpm-build < 4.14.1+git26
 
