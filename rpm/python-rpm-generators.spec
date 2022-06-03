@@ -1,6 +1,7 @@
 # Disable automatic bytecompilation. We install only one script and we will
 # never "import" it.
-%global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
+#%global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
+%global disable_docs_package 1
 
 Name:           python-rpm-generators
 Summary:        Dependency generators for Python RPMs
@@ -34,12 +35,14 @@ Conflicts:      rpm-build < 4.14.1+git26
 %autosetup -n %{name}-%{version}/%{name}
 
 %install
-install -Dpm0644 -t %{buildroot}%{_fileattrsdir} python.attr pythondist.attr
-install -Dpm0755 -t %{buildroot}%{_rpmconfigdir} pythondeps.sh pythondistdeps.py
+echo ${RPM_BUILD_ROOT}
+install -Dpm0644 -t %{buildroot}%{_fileattrsdir} *.attr
+install -Dpm0755 -t %{buildroot}%{_rpmconfigdir} *.py
 
 %files -n python3-rpm-generators
 %license COPYING
 %{_fileattrsdir}/python.attr
 %{_fileattrsdir}/pythondist.attr
-%{_rpmconfigdir}/pythondeps.sh
+%{_fileattrsdir}/pythonname.attr
 %{_rpmconfigdir}/pythondistdeps.py
+%{_rpmconfigdir}/pythonbundles.py
