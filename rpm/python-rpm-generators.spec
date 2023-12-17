@@ -4,13 +4,14 @@
 
 Name:           python-rpm-generators
 Summary:        Dependency generators for Python RPMs
-Version:        10
-Release:        1
+Version:        14
+Release:        8
 
 # Originally all those files were part of RPM, so license is kept here
 License:        GPLv2+
-Url:            https://src.fedoraproject.org/python-rpm-generators
+Url:            https://github.com/sailfishos/python-rpm-generators
 Source0:        %{name}-%{version}.tar.gz
+Patch1:         0001-Remove-not-needed-__pythonname_obsoletes-to-silence-.patch
 
 BuildArch:      noarch
 
@@ -21,9 +22,9 @@ metadata.
 
 %package -n python3-rpm-generators
 Summary:        %{summary}
-Requires:       python3-setuptools
+Requires:       python3-packaging
 # This contains the Lua functions we use:
-Requires:       python-srpm-macros
+Requires:       python-srpm-macros >= 3.11
 # The point of split
 Conflicts:      rpm-build < 4.14.1+git26
 
@@ -31,15 +32,16 @@ Conflicts:      rpm-build < 4.14.1+git26
 %{summary}.
 
 %prep
-%autosetup -n %{name}-%{version}/%{name}
+%autosetup -p1 -n %{name}-%{version}/%{name}
 
 %install
-install -Dpm0644 -t %{buildroot}%{_fileattrsdir} python.attr pythondist.attr
-install -Dpm0755 -t %{buildroot}%{_rpmconfigdir} pythondeps.sh pythondistdeps.py
+install -Dpm0644 -t %{buildroot}%{_fileattrsdir} *.attr
+install -Dpm0755 -t %{buildroot}%{_rpmconfigdir} *.py
 
 %files -n python3-rpm-generators
 %license COPYING
 %{_fileattrsdir}/python.attr
 %{_fileattrsdir}/pythondist.attr
-%{_rpmconfigdir}/pythondeps.sh
+%{_fileattrsdir}/pythonname.attr
 %{_rpmconfigdir}/pythondistdeps.py
+%{_rpmconfigdir}/pythonbundles.py
