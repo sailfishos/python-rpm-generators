@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@jolla.com>
+Date: Wed, 15 Oct 2025 18:30:54 +0300
+Subject: [PATCH] Remove not needed %__pythonname_obsoletes to silence warnings
+
+Silences "Macro %1 defined but not used within scope" warning which
+will disappear after updating rpm to 4.17 or newer.
+---
+ pythonname.attr | 23 -----------------------
+ 1 file changed, 23 deletions(-)
+
+diff --git a/pythonname.attr b/pythonname.attr
+index 07d8df5fe57a2ad7e67fef9f1265f764f06f1f0b..9cd580a0a516320901b2d37c21b5458143ac8dbb 100644
+--- a/pythonname.attr
++++ b/pythonname.attr
+@@ -16,27 +16,4 @@
+     end
+ }
+ 
+-%__pythonname_obsoletes() %{?rhel:%{lua:
+-    -- On CentOS/RHEL we automatically generate Obsoletes tags in the form:
+-    --   package python3-foo -> Obsoletes: python3.XY-foo
+-    -- This provides a clean upgrade path between major versions of CentOS/RHEL.
+-    -- In Fedora this is not needed as we don't ship ecosystem packages
+-    -- for alternative Python interpreters.
+-    local python = require 'fedora.srpm.python'
+-    -- this macro is called for each file in a package, the path being in %1
+-    -- but we don't need to know the path, so we would get for each file: Macro %1 defined but not used within scope
+-    -- in here, we expand %name conditionally on %1 to suppress the warning
+-    local name = rpm.expand('%{?1:%{name}}')
+-    local evr = rpm.expand('%{?epoch:%{epoch}:}%{version}-%{release}')
+-    local obsoletes = python.python_altobsoletes_once(name, evr)
+-    -- obsoletes is either an array/table or nil
+-    -- nil means the function was already called with the same arguments:
+-    --   either with another file in %1 or manually via %py_provides
+-    if obsoletes then
+-      for i, obsolete in ipairs(obsoletes) do
+-          print(obsolete .. ' ')
+-        end
+-    end
+-}}
+-
+ %__pythonname_path ^/
